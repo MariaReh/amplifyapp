@@ -1,0 +1,49 @@
+# .github/workflows/ci.yml
+
+# This is a basic GitHub Actions workflow to run your project's tests
+# when a new commit is pushed to the main branch or when a pull request is created.
+
+name: CI Pipeline
+
+# This section defines the events that trigger the workflow.
+on:
+  # The workflow will run on every push to the `main` branch.
+  push:
+    branches:
+      - main
+  # The workflow will run on every pull request targeting the `main` branch.
+  pull_request:
+    branches:
+      - main
+
+# This section defines the jobs that will run in the workflow.
+jobs:
+  # This is a single job named "build-and-test".
+  build-and-test:
+    # We will run this job on the latest version of Ubuntu.
+    runs-on: ubuntu-latest
+
+    # This section defines the steps for the "build-and-test" job.
+    steps:
+      # Step 1: Check out the code from the repository.
+      # The actions/checkout@v4 action checks out your repository under $GITHUB_WORKSPACE.
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Node.js.
+      # The actions/setup-node@v4 action sets up a Node.js environment.
+      # It installs the specified Node.js version and adds it to the PATH.
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18' # You can change this to match your project's Node.js version.
+          cache: 'npm' # This caches the node_modules folder to speed up subsequent runs.
+
+      # Step 3: Install project dependencies.
+      - name: Install Dependencies
+        run: npm install
+
+      # Step 4: Run the tests.
+      # This step executes the 'test' script defined in your package.json file.
+      - name: Run Tests
+        run: npm test
